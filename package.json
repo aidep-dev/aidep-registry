@@ -1,0 +1,24 @@
+{
+  "name": "aidep-registry",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "poll": "node src/poller.ts",
+    "poll:dry": "node src/poller.ts --dry-run",
+    "liveness": "node src/liveness.ts",
+    "tripwire": "node src/tripwire.ts",
+    "seed": "node src/seed.ts"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.0",
+    "vitest": "^3.0.0"
+  }
+}

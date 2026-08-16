@@ -1,0 +1,47 @@
+name: poll
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Poll provider pages
+        run: npm run poll
+      - name: Liveness check (models-list diff)
+        # skipped when provider keys are not configured
+        if: env.OPENAI_API_KEY != '' || env.ANTHROPIC_API_KEY != '' || env.GEMINI_API_KEY != ''
+        run: npm run liveness
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      - name: Tripwire cross-check (benchr, alert-only)
+        run: npm run tripwire
+        continue-on-error: true
+      - name: Open review PR if the registry changed
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if git diff --quiet -- registry/ state/; then
+            echo "no change"
+            exit 0
+          fi
+          branch="poller/$(date -u +%Y-%m-%d)"
+          git config user.name "aidep-poller"
+          git config user.email "poller@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add registry/ state/
+          git commit -m "registry: $(date -u +%Y-%m-%d) provider page changes"
+          git push -u origin "$branch"
+          gh pr create --fill --body-file .poller-pr-body.md || gh pr create --fill
