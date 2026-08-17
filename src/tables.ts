@@ -23,6 +23,9 @@ export function extractTables(md: string): MdTable[] {
   let h2: string | null = null;
   let current: string[][] | null = null;
 
+  // a row whose closing "|" wrapped onto a later physical line, held until it closes
+  let pending: string | null = null;
+
   const flush = () => {
     if (current && current.length >= 2) {
       // row 1 must be the separator (---) row; drop it
@@ -34,9 +37,18 @@ export function extractTables(md: string): MdTable[] {
     current = null;
   };
 
+  const pushRow = (rowText: string) => {
+    const cells = rowText
+      .slice(1, -1)
+      .split("|")
+      .map((c) => c.trim());
+    (current ??= []).push(cells);
+  };
+
   for (const line of lines) {
     const hm = line.match(/^(#{1,6})\s+(.*)$/);
     if (hm) {
+      pending = null; // a heading ends any table, a half-wrapped row included
       flush();
       headingLevel = hm[1].length;
       heading = hm[2].trim();
@@ -44,16 +56,30 @@ export function extractTables(md: string): MdTable[] {
       continue;
     }
     const t = line.trim();
-    if (t.startsWith("|") && t.endsWith("|") && t.length > 1) {
-      const cells = t
-        .slice(1, -1)
-        .split("|")
-        .map((c) => c.trim());
-      (current ??= []).push(cells);
+    if (pending !== null) {
+      // continuation of a hard-wrapped row; a blank line means it never closed
+      if (t === "") {
+        pending = null;
+        flush();
+        continue;
+      }
+      pending = `${pending} ${t}`;
+      if (pending.endsWith("|")) {
+        pushRow(pending);
+        pending = null;
+      }
+      continue;
+    }
+    if (t.startsWith("|") && t.length > 1) {
+      // a "| ..." line with no closing "|" is a wrapped row: hold it, don't end
+      // the table (which would silently drop every row that follows)
+      if (t.endsWith("|")) pushRow(t);
+      else pending = t;
     } else {
       flush();
     }
   }
+  pending = null;
   flush();
   return tables;
 }

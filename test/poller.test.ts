@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { Provider, RegistryRow } from "../src/schema.ts";
 import { runPoller, SOURCES } from "../src/poller.ts";
 import { runLiveness } from "../src/liveness.ts";
@@ -184,6 +184,110 @@ describe("runPoller", () => {
     expect(r2.changed).toBe(false);
     expect(r2.anomalies).toEqual([]);
   });
+
+  // Finding 1(b): one provider whose parse throws must not crash the poller; it
+  // becomes an anomaly and the other two providers still seed.
+  it("isolates a provider whose parse throws, still seeds the others", async () => {
+    const t = tmp();
+    // an http (non-https) migration link makes the schema reject the row, so
+    // parseOpenAI throws inside validateRows
+    const mutant = [
+      FIXTURE.openai,
+      "",
+      "## Upcoming deprecations",
+      "",
+      "### 2026-01-01: Insecure link",
+      "",
+      "| Shutdown date | Model | Recommended replacement |",
+      "| --- | --- | --- |",
+      "| Dec 1, 2026 | `bad-model` | [see guide](http://insecure.example) |",
+      "",
+    ].join("\n");
+
+    const r = await runPoller({
+      fetchImpl: fakeFetch(bodies({ openai: mutant })),
+      registryDir: t.registryDir,
+      stateDir: t.stateDir,
+      verifiedAt: V,
+    });
+
+    expect(r.anomalies.some((a) => a.startsWith("openai: parse failed"))).toBe(true);
+    // openai never wrote, but the other two seeded
+    expect(existsSync(join(t.registryDir, "openai.json"))).toBe(false);
+    expect(existsSync(join(t.registryDir, "anthropic.json"))).toBe(true);
+    expect(existsSync(join(t.registryDir, "google.json"))).toBe(true);
+  });
+
+  // Finding poller-merge(a): a single replacement becoming multiple options sets
+  // replacement_id=null + replacement_notes; the notes must survive the merge.
+  it("carries replacement_notes when one replacement becomes several", async () => {
+    const t = tmp();
+    await seedRun(t);
+    const file = join(t.registryDir, "openai.json");
+    const before: RegistryRow[] = JSON.parse(readFileSync(file, "utf8"));
+    const seeded = before.find((r) => r.id === "openai:model:gpt-5-2025-08-07")!;
+    expect(seeded.replacement_id).toBe("gpt-5.6-sol");
+    expect(seeded.replacement_notes).toBeNull();
+
+    const anchor =
+      "| Dec 11, 2026  | `gpt-5-2025-08-07`      | `gpt-5.6-sol`                         |";
+    expect(FIXTURE.openai).toContain(anchor);
+    const mutated = FIXTURE.openai.replace(
+      anchor,
+      "| Dec 11, 2026  | `gpt-5-2025-08-07`      | `gpt-5.6-sol` or `gpt-5.7-sol`         |",
+    );
+
+    await runPoller({
+      fetchImpl: fakeFetch(bodies({ openai: mutated })),
+      registryDir: t.registryDir,
+      stateDir: t.stateDir,
+      verifiedAt: V,
+    });
+
+    const after: RegistryRow[] = JSON.parse(readFileSync(file, "utf8"));
+    const merged = after.find((r) => r.id === "openai:model:gpt-5-2025-08-07")!;
+    expect(merged.replacement_id).toBeNull();
+    expect(merged.replacement_notes).toBe("gpt-5.6-sol or gpt-5.7-sol");
+  });
+
+  // Finding poller-merge(c): status is date-derived, so a passed shutdown date
+  // must flip even when the page bytes are unchanged (no hash short-circuit).
+  it("re-derives status on a byte-stable page when a shutdown date passes", async () => {
+    const t = tmp();
+    await seedRun(t);
+    const file = join(t.registryDir, "openai.json");
+    const seeded: RegistryRow[] = JSON.parse(readFileSync(file, "utf8"));
+    expect(seeded.find((r) => r.id === "openai:model:gpt-5-2025-08-07")!.status).toBe("deprecated");
+
+    // identical bytes, later date: gpt-5-2025-08-07 dies 2026-12-11
+    const r2 = await runPoller({
+      fetchImpl: fakeFetch(bodies()),
+      registryDir: t.registryDir,
+      stateDir: t.stateDir,
+      verifiedAt: "2026-12-15",
+    });
+    expect(r2.changed).toBe(true);
+    const after: RegistryRow[] = JSON.parse(readFileSync(file, "utf8"));
+    expect(after.find((r) => r.id === "openai:model:gpt-5-2025-08-07")!.status).toBe("retired");
+  });
+
+  // Finding poller-merge(d): a zero-row parse is an anomaly even when the
+  // registry side is empty (a broken first run must not seed nothing silently).
+  it("flags a zero-row parse as an anomaly even on an empty registry", async () => {
+    const t = tmp();
+    const ja = readFileSync(join(FIX, "google-deprecations-ja.html"), "utf8");
+    const r = await runPoller({
+      fetchImpl: fakeFetch(bodies({ google: ja })),
+      registryDir: t.registryDir,
+      stateDir: t.stateDir,
+      verifiedAt: V,
+    });
+    expect(r.anomalies.some((a) => a.startsWith("google: parsed 0 rows"))).toBe(true);
+    // google was skipped, never written; the other two still seeded
+    expect(existsSync(join(t.registryDir, "google.json"))).toBe(false);
+    expect(existsSync(join(t.registryDir, "openai.json"))).toBe(true);
+    expect(existsSync(join(t.registryDir, "anthropic.json"))).toBe(true);
+  });
 });
 
 function modelRow(provider: Provider, apiId: string): RegistryRow {
@@ -237,6 +341,75 @@ describe("runLiveness", () => {
     expect(after.find((x) => x.id === "google:model:gemini-old")!.status).toBe("retired");
     expect(after.find((x) => x.id === "google:model:gemini-live")!.status).toBe("deprecated");
   });
+
+  // Finding 4: follow pagination and accumulate the FULL list before deciding.
+  // A model that only appears on page 2 must not be flipped off page 1.
+  it("does not flip a model that only appears on a later page", async () => {
+    const t = tmp();
+    mkdirSync(t.registryDir, { recursive: true });
+    writeFileSync(
+      join(t.registryDir, "google.json"),
+      JSON.stringify([modelRow("google", "gemini-old"), modelRow("google", "gemini-page2")], null, 2) +
+        "\n",
+    );
+
+    const urls: string[] = [];
+    const pagedFetch = (async (input: unknown) => {
+      const url = String(input);
+      urls.push(url);
+      if (url.includes("pageToken=P2")) {
+        return new Response(JSON.stringify({ models: [{ name: "models/gemini-page2" }] }));
+      }
+      return new Response(
+        JSON.stringify({ models: [{ name: "models/gemini-live" }], nextPageToken: "P2" }),
+      );
+    }) as typeof fetch;
+
+    const r = await runLiveness({
+      fetchImpl: pagedFetch,
+      env: { GEMINI_API_KEY: "test-key" },
+      registryDir: t.registryDir,
+    });
+
+    expect(urls.length).toBe(2); // followed the cursor to page 2
+    expect(r.flipped).toEqual(["google:model:gemini-old"]);
+    const after = readRows(t.registryDir, "google");
+    expect(after.find((x) => x.id === "google:model:gemini-page2")!.status).toBe("deprecated");
+  });
+
+  // Finding 4: one provider's HTTP error must not abort liveness for the others.
+  it("keeps checking other providers when one HTTP errors", async () => {
+    const err = vi.spyOn(console, "error").mockImplementation(() => {});
+    const t = tmp();
+    mkdirSync(t.registryDir, { recursive: true });
+    writeFileSync(
+      join(t.registryDir, "openai.json"),
+      JSON.stringify([modelRow("openai", "gpt-dead")], null, 2) + "\n",
+    );
+    writeFileSync(
+      join(t.registryDir, "google.json"),
+      JSON.stringify([modelRow("google", "gemini-dead")], null, 2) + "\n",
+    );
+
+    const errFetch = (async (input: unknown) => {
+      const url = String(input);
+      if (url.includes("openai")) return new Response("nope", { status: 500 });
+      return new Response(JSON.stringify({ models: [{ name: "models/gemini-live" }] }));
+    }) as typeof fetch;
+
+    const r = await runLiveness({
+      fetchImpl: errFetch,
+      env: { OPENAI_API_KEY: "k1", GEMINI_API_KEY: "k2" },
+      registryDir: t.registryDir,
+    });
+    err.mockRestore();
+
+    // openai errored (caught), google still processed and flipped gemini-dead
+    expect(r.flipped).toEqual(["google:model:gemini-dead"]);
+    expect(readRows(t.registryDir, "openai").find((x) => x.id === "openai:model:gpt-dead")!.status).toBe(
+      "deprecated",
+    );
+  });
 });
 
 describe("runTripwire", () => {
@@ -261,5 +434,40 @@ describe("runTripwire", () => {
     });
     expect(r.alerts.length).toBe(1);
     expect(r.alerts[0]).toContain("mystery-9000");
+  });
+
+  // Finding tripwire(I): a hostile/malformed payload must not crash the run.
+  it("survives hostile/malformed payloads without throwing", async () => {
+    const t = tmp();
+    const payloads: unknown[] = [
+      null,
+      42,
+      "a string",
+      { records: "not an array" },
+      { records: [null, { kind: "model" }, { kind: "model", api_ids: "not-array" }] },
+    ];
+    for (const payload of payloads) {
+      const r = await runTripwire({
+        fetchImpl: (async () => new Response(JSON.stringify(payload))) as typeof fetch,
+        registryDir: t.registryDir,
+      });
+      expect(Array.isArray(r.alerts)).toBe(true);
+    }
+  });
+
+  // Finding tripwire(II): third-party ids are sanitized before printing, so a
+  // hostile id cannot forge log lines or GitHub workflow commands.
+  it("sanitizes third-party ids before printing", async () => {
+    const t = tmp();
+    const evil = "evil-id\n::error::pwned\u001b[31mred::set-output::";
+    const r = await runTripwire({
+      fetchImpl: (async () =>
+        new Response(JSON.stringify({ records: [{ kind: "model", api_ids: [evil] }] }))) as typeof fetch,
+      registryDir: t.registryDir,
+    });
+    expect(r.alerts.length).toBe(1);
+    expect(r.alerts[0]).not.toContain("\n");
+    expect(r.alerts[0]).not.toContain("\u001b");
+    expect(r.alerts[0]).not.toContain("::");
   });
 });

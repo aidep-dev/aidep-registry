@@ -40,6 +40,10 @@ const PARSER_FIELDS = [
   "dies",
   "dies_is_earliest_possible",
   "replacement_id",
+  // replacement_id and replacement_notes are two halves of one fact: a page that
+  // swaps a single replacement for several options sets id=null + notes, so notes
+  // must move with id or the new replacement info is lost.
+  "replacement_notes",
   "source_url",
 ] as const;
 
@@ -104,6 +108,7 @@ function mergeRows(
       dies: p.dies,
       dies_is_earliest_possible: p.dies_is_earliest_possible,
       replacement_id: p.replacement_id,
+      replacement_notes: p.replacement_notes,
       source_url: p.source_url,
       verified_at: verifiedAt,
     });
@@ -177,13 +182,26 @@ export async function runPoller(opts: {
     if (!res.ok) throw new Error(`${src.provider}: HTTP ${res.status} for ${src.url}`);
     const raw = await res.text();
     const hash = createHash("sha256").update(raw).digest("hex");
-    if (hashes[src.provider] === hash) continue; // page byte-identical, skip parse
-    const parsed = src.parse(raw, { verifiedAt: opts.verifiedAt });
+    // No byte-identical short-circuit: status is derived from dies vs verifiedAt,
+    // so a shutdown date passing must be able to flip a row even on an unchanged
+    // page. The merge still records a diff only when a parser field moved.
+    let parsed: RegistryRow[];
+    try {
+      parsed = src.parse(raw, { verifiedAt: opts.verifiedAt });
+    } catch (e) {
+      // One provider's page breaking the parser must not block the other two.
+      // Leave its hash unwritten so the next run retries this source.
+      anomalies.push(
+        `${src.provider}: parse failed: ${e instanceof Error ? e.message : String(e)}`,
+      );
+      continue;
+    }
     const existing = readRegistry(registryDir, src.provider);
-    if (parsed.length === 0 && existing.length > 0) {
-      // A page that yielded rows before but parses to zero now is a fetch or
-      // page-shape anomaly (e.g. a localized variant), never a mass removal.
-      // Skip the source and leave its hash alone so the next run retries.
+    if (parsed.length === 0) {
+      // A provider page never legitimately parses to zero rows; that's a fetch or
+      // page-shape anomaly (e.g. a localized variant), never a mass removal. This
+      // must fire even on an empty registry, or a broken first run seeds nothing
+      // and persists the bad page's hash.
       anomalies.push(
         `${src.provider}: parsed 0 rows but registry has ${existing.length}; skipping source`,
       );
@@ -224,7 +242,9 @@ if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) 
           ? `changed: ${r.diff.added.length} added, ${r.diff.changed.length} changed, ${r.diff.gone.length} gone`
           : "no change",
       );
-      if (r.anomalies.length) process.exit(1);
+      // Anomalies are logged, never fatal: exiting non-zero here would fail the
+      // poll step and block liveness, tripwire, and the PR for the providers that
+      // DID parse. Only a real crash (the catch below) aborts the pipeline.
     })
     .catch((e) => {
       console.error(e);

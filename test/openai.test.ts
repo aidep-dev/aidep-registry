@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { parseOpenAI } from "../src/parsers/openai.ts";
 import type { RegistryRow } from "../src/schema.ts";
 
@@ -126,5 +126,61 @@ describe("parseOpenAI", () => {
   it("matches the full-parse snapshot (page-shape drift tripwire)", () => {
     expect(rows.length).toMatchSnapshot("row count");
     expect(rows).toMatchSnapshot();
+  });
+
+  // Finding 1(a): one odd model-cell id must not crash the parser (which would
+  // crash the whole poller). A weird id sanitizes to a valid slug; an id that
+  // sanitizes to nothing is dropped, never fed to the schema regex.
+  it("sanitizes a weird model-cell id instead of throwing", () => {
+    const mutant = [
+      "## Upcoming deprecations",
+      "",
+      "### 2026-01-01: Odd ids",
+      "",
+      "| Shutdown date | Model | Recommended replacement |",
+      "| --- | --- | --- |",
+      "| Dec 1, 2026 | `Weird ID!!!` | `gpt-x` |",
+      "| Dec 1, 2026 | `!!!` | `gpt-y` |",
+      "| Dec 1, 2026 | `gpt-4.5-preview` | `gpt-5` |",
+      "",
+    ].join("\n");
+    let out: RegistryRow[] = [];
+    expect(() => {
+      out = parseOpenAI(mutant, { verifiedAt: "2026-08-16" });
+    }).not.toThrow();
+    const ids = out.map((r) => r.id);
+    expect(ids).toContain("openai:model:weird-id");
+    // dots survive (not kebab'd away) so a dotted id keeps its shape
+    expect(ids).toContain("openai:model:gpt-4.5-preview");
+    // an all-symbol id sanitizes to "" and is dropped, not emitted invalid
+    expect(out.every((r) => r.id !== "openai:model:")).toBe(true);
+  });
+
+  // Finding openai(A): dropped product shutdowns / prose model cells are logged,
+  // never silent, so a human can add the missing SPECIAL/PRODUCTS entry.
+  it("logs what it drops instead of silently swallowing it", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const mutant = [
+      "## Upcoming deprecations",
+      "",
+      "### 2026-01-01: Mystery product",
+      "",
+      "| Date | Update |",
+      "| --- | --- |",
+      "| Jan 1, 2026 | Deprecation announced. |",
+      "| Feb 1, 2026 | Scheduled to shut down. |",
+      "",
+      "### 2026-01-02: Prose cell",
+      "",
+      "| Shutdown date | Model | Recommended replacement |",
+      "| --- | --- | --- |",
+      "| Dec 1, 2026 | see the note below | `gpt-z` |",
+      "",
+    ].join("\n");
+    parseOpenAI(mutant, { verifiedAt: "2026-08-16" });
+    const msgs = warn.mock.calls.map((c) => String(c[0]));
+    warn.mockRestore();
+    expect(msgs.some((m) => m.includes("Mystery product"))).toBe(true);
+    expect(msgs.some((m) => m.includes("see the note below"))).toBe(true);
   });
 });

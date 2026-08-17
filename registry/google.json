@@ -348,10 +348,10 @@
     "api_ids": [
       "gemini-3-pro-image-preview"
     ],
-    "status": "retired",
+    "status": "deprecated",
     "announced": null,
     "dies": "2026-06-25",
-    "dies_is_earliest_possible": false,
+    "dies_is_earliest_possible": true,
     "replacement_id": "gemini-3-pro-image",
     "replacement_notes": null,
     "migration_url": null,
@@ -384,10 +384,10 @@
     "api_ids": [
       "gemini-3.1-flash-image-preview"
     ],
-    "status": "retired",
+    "status": "deprecated",
     "announced": null,
     "dies": "2026-06-25",
-    "dies_is_earliest_possible": false,
+    "dies_is_earliest_possible": true,
     "replacement_id": "gemini-3.1-flash-image",
     "replacement_notes": null,
     "migration_url": null,
@@ -672,10 +672,10 @@
     "api_ids": [
       "veo-2.0-generate-001"
     ],
-    "status": "retired",
+    "status": "deprecated",
     "announced": null,
     "dies": "2026-06-30",
-    "dies_is_earliest_possible": false,
+    "dies_is_earliest_possible": true,
     "replacement_id": null,
     "replacement_notes": "veo-3.1-generate-preview or Gemini Enterprise Agent Platform (https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/veo/3-1-generate)",
     "migration_url": null,
@@ -690,10 +690,10 @@
     "api_ids": [
       "veo-3.0-fast-generate-001"
     ],
-    "status": "retired",
+    "status": "deprecated",
     "announced": null,
     "dies": "2026-06-30",
-    "dies_is_earliest_possible": false,
+    "dies_is_earliest_possible": true,
     "replacement_id": null,
     "replacement_notes": "veo-3.1-fast-generate-preview or Gemini Enterprise Agent Platform (https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/veo/3-1-generate)",
     "migration_url": null,
@@ -726,10 +726,10 @@
     "api_ids": [
       "veo-3.0-generate-001"
     ],
-    "status": "retired",
+    "status": "deprecated",
     "announced": null,
     "dies": "2026-06-30",
-    "dies_is_earliest_possible": false,
+    "dies_is_earliest_possible": true,
     "replacement_id": null,
     "replacement_notes": "veo-3.1-generate-preview or Gemini Enterprise Agent Platform (https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/veo/3-1-generate)",
     "migration_url": null,

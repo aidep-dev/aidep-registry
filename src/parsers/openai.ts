@@ -112,8 +112,17 @@ const MODEL_HEADERS = new Set([
 
 const ID_TOKEN = /^\/?[A-Za-z0-9][A-Za-z0-9._/-]*$/;
 
-function kebab(s: string): string {
-  return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+/**
+ * Slug for the row id. Keeps dots (so `gpt-4.5-preview` stays `gpt-4.5-preview`),
+ * folds every other run of non-slug chars to a single dash, and trims junk off
+ * the ends. Returns "" when nothing usable survives, so callers drop the row
+ * instead of feeding the schema regex an id it will reject and throw on.
+ */
+function slugify(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/[^a-z0-9.-]+/g, "-")
+    .replace(/^[^a-z0-9]+|-+$/g, "");
 }
 
 interface Section {
@@ -230,7 +239,8 @@ function genericIdentity(modelCell: string): Identity | null {
   if (ids.length === 0) return null;
   const primary = ids[0];
   const surface: Surface = primary.startsWith("/") ? "endpoint" : "model";
-  const slug = surface === "model" ? primary.toLowerCase() : kebab(primary);
+  const slug = slugify(primary);
+  if (!slug) return null; // an id that sanitizes to nothing is not a real row
   // alias spans ("`gpt-4-0613` | `gpt-4`, `gpt-4-completions`") all greppable
   return { slug, surface, apiIds: ids };
 }
@@ -270,7 +280,12 @@ export const parseOpenAI: Parser = (raw, opts) => {
       if (updateIdx !== -1) {
         // product shutdown timeline: [Date, Update]
         const product = PRODUCTS.find((p) => p.match.test(section.title));
-        if (!product) continue;
+        if (!product) {
+          // a new product shutdown the PRODUCTS map doesn't know about: don't
+          // guess an identity, but surface it so a human adds the entry
+          console.warn(`openai: dropped unmapped product shutdown section "${section.title}"`);
+          continue;
+        }
         const entries = table.rows.map((r) => ({
           date: parseDateCell(r[dateIdx] ?? ""),
           text: r[updateIdx] ?? "",
@@ -310,7 +325,12 @@ export const parseOpenAI: Parser = (raw, opts) => {
         const cells = fixCells(rawCells, table.headers.length);
         const modelCell = (cells[modelIdx] ?? "").trim();
         const identity = SPECIAL[modelCell] ?? genericIdentity(modelCell);
-        if (!identity) continue;
+        if (!identity) {
+          // a prose model cell with no greppable id: log rather than silently
+          // drop, so a human can decide whether it needs a SPECIAL entry
+          if (modelCell) console.warn(`openai: dropped model cell with no api id: "${modelCell}"`);
+          continue;
+        }
         const { dies, earliest } = parseShutdown(cells[dateIdx] ?? "");
         const repl =
           identity.replacementNotes !== undefined

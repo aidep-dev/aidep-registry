@@ -21,11 +21,15 @@ export const parseAnthropic: Parser = (raw, opts) => {
     if (t.headers[0] !== "Retirement date") continue;
     const sectionDate = t.heading?.match(/^(\d{4}-\d{2}-\d{2}):/)?.[1] ?? null;
     for (const [retirement, model, replacement] of t.rows) {
+      if (retirement === undefined || model === undefined) continue; // short/malformed row
       const id = unbacktick(model).toLowerCase();
+      // History sections run newest-first; a re-deprecated model keeps its
+      // newest row, so never overwrite an id a later (older) table also lists.
+      if (models.has(id)) continue;
       models.set(id, {
         announced: sectionDate,
         dies: parseDateCell(retirement),
-        replacement: unbacktick(replacement) || null,
+        replacement: unbacktick(replacement ?? "") || null,
       });
     }
   }
@@ -36,16 +40,20 @@ export const parseAnthropic: Parser = (raw, opts) => {
   for (const t of tables) {
     if (t.headers[0] !== "API model name") continue;
     for (const [name, state, deprecated, retirement] of t.rows) {
-      if (state === "Active") continue;
+      if (name === undefined) continue; // short/malformed row
+      // Only Deprecated/Retired are deprecation events. Active AND Legacy
+      // (which just means "no more updates") are not, so skip anything else.
+      if (state !== "Deprecated" && state !== "Retired") continue;
       const id = name.toLowerCase();
-      const announced = parseDateCell(deprecated);
+      const announced = parseDateCell(deprecated ?? "");
+      const retire = retirement ?? "";
       const existing = models.get(id);
       if (existing) {
         if (announced) existing.announced = announced;
       } else {
         models.set(id, {
           announced,
-          dies: /not sooner than/i.test(retirement) ? null : parseDateCell(retirement),
+          dies: /not sooner than/i.test(retire) ? null : parseDateCell(retire),
           replacement: null,
         });
       }
@@ -83,7 +91,7 @@ export const parseAnthropic: Parser = (raw, opts) => {
   for (const t of tables) {
     if (t.headers[0] !== "Parameter") continue;
     for (const r of t.rows) {
-      const ids = codeSpans(r[0]);
+      const ids = codeSpans(r[0] ?? "");
       if (ids.length === 0 || !/deprecated/i.test(r[1] ?? "")) continue;
       rows.push({
         id: `anthropic:param:${ids.map((s) => s.replace(/_/g, "-")).join("-")}`,

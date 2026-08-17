@@ -20,7 +20,8 @@ export const RegistryRowSchema = z.object({
   replacement_id: z.string().nullable(),
   // config the replacement needs, e.g. "reasoning.mode: pro" or "omit temperature/top_p/top_k"
   replacement_notes: z.string().nullable(),
-  migration_url: z.url().nullable(),
+  // defense in depth: a migration link must be https, never http/ftp/js
+  migration_url: z.url().refine((u) => u.startsWith("https://"), "must be https").nullable(),
   source_url: z.url(),
   verified_at: isoDate,
   // v1 scopes to first-party APIs only; Bedrock/Vertex run their own calendars

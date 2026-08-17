@@ -50,4 +50,50 @@ describe("parseGoogle", () => {
   it("matches the full-output snapshot", () => {
     expect(rows).toMatchSnapshot();
   });
+
+  // Finding 3: columns are mapped by header name, so an inserted column can't
+  // shift model/date/replacement into the wrong fields (hardcoded 0/2/3 would).
+  it("maps columns by header name even with an inserted column", () => {
+    const html = `
+      <table class="pricing-table">
+        <thead><tr>
+          <td><b>Model</b></td>
+          <td><b>Release date</b></td>
+          <td><b>Notes</b></td>
+          <td><b>Shutdown date</b></td>
+          <td><b>Recommended replacement</b></td>
+        </tr></thead>
+        <tbody>
+          <tr class="row-gray">
+            <td><code>gemini-x</code></td>
+            <td>January 1, 2025</td>
+            <td>some note</td>
+            <td>June 1, 2026</td>
+            <td><code>gemini-y</code></td>
+          </tr>
+        </tbody>
+      </table>`;
+    const out = parseGoogle(html, { verifiedAt: "2026-08-16" });
+    const r = out.find((x) => x.id === "google:model:gemini-x");
+    expect(r).toBeDefined();
+    expect(r!.dies).toBe("2026-06-01");
+    expect(r!.replacement_id).toBe("gemini-y");
+    expect(r!.status).toBe("retired"); // row-gray
+  });
+
+  // Finding 5: shutdown dates are earliest-possible, not deaths. A non-gray row
+  // whose earliest date has already passed stays deprecated, never retired.
+  it("keeps a passed earliest-possible date deprecated, not retired", () => {
+    // verifiedAt is one day past gemini-3.1-flash-image-preview's 2026-06-25
+    // (a non-gray row); it must not flip to retired on that.
+    const later = parseGoogle(raw, { verifiedAt: "2026-06-26" });
+    const r = later.find((x) => x.id === "google:model:gemini-3.1-flash-image-preview");
+    expect(r).toBeDefined();
+    expect(r!.dies).toBe("2026-06-25");
+    expect(r!.status).toBe("deprecated");
+    expect(r!.dies_is_earliest_possible).toBe(true);
+    // a genuinely retired (grayed) row with a past date still reads retired
+    const gray = later.find((x) => x.id === "google:model:gemini-2.0-flash");
+    expect(gray!.status).toBe("retired");
+  });
 });
