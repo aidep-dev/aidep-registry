@@ -1,5 +1,6 @@
 {
   "name": "aidep-registry",
+  "license": "MIT",
   "private": true,
   "type": "module",
   "engines": { "node": ">=22" },

@@ -20,3 +20,10 @@ node src/seed.ts  # regenerate registry/*.json from the fixtures
 `.github/workflows/poll.yml` runs the poller daily and opens a review PR when anything changed; merging the PR is the human approval. Provider API keys (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`) as repo secrets enable the liveness check; without them it is skipped.
 
 v1 scope: first-party APIs only. Bedrock and Vertex run their own retirement calendars for the same models.
+
+## Licence
+
+Code is MIT (`LICENSE`). **The registry data in `registry/*.json` is CC0** (`registry/LICENSE`):
+public domain, no attribution required, no share-alike. Point your own agent, tool or CI at it and
+do whatever you like with it. Every row carries the vendor `source_url` it came from and the
+`verified_at` date it was last checked, so you can audit any claim in it without trusting us.
