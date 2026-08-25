@@ -1,0 +1,68 @@
+name: File a row
+description: A deprecation we are missing, or a correction to a row we have. Every claim needs the vendor page that says so.
+title: "row: "
+labels: [registry]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        One row per deprecation event. The only hard requirement is `source_url`: a vendor page
+        that states the claim. Rows come from vendor pages, never from memory or a model.
+  - type: dropdown
+    id: provider
+    attributes:
+      label: Provider
+      options: [openai, anthropic, google]
+    validations:
+      required: true
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Surface
+      description: What kind of thing is being retired.
+      options: [model, endpoint, param, header, feature]
+    validations:
+      required: true
+  - type: input
+    id: api_ids
+    attributes:
+      label: API ids
+      description: The literal strings code contains, comma-separated. These are what the scanner greps for.
+      placeholder: gpt-4-turbo, gpt-4-turbo-2024-04-09
+    validations:
+      required: true
+  - type: dropdown
+    id: status
+    attributes:
+      label: Status
+      description: legacy = discouraged, deprecated = shutdown announced, retired = calls fail today.
+      options: [legacy, deprecated, retired]
+    validations:
+      required: true
+  - type: input
+    id: announced
+    attributes:
+      label: Announced (YYYY-MM-DD)
+      description: When the vendor announced it, if the page says.
+  - type: input
+    id: dies
+    attributes:
+      label: Dies (YYYY-MM-DD)
+      description: The shutdown date, if one is published. Say "earliest possible" after the date if the vendor phrases it that way (Google does).
+  - type: input
+    id: replacement
+    attributes:
+      label: Vendor-named replacement
+      description: The api id the vendor says to use instead, if any. We check it against the registry; one in six is itself already dying.
+  - type: input
+    id: source_url
+    attributes:
+      label: Source URL
+      description: The vendor page that states all of the above. The row cannot merge without it.
+      placeholder: https://platform.openai.com/docs/deprecations
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything else
