@@ -12,7 +12,7 @@
       "/v1/threads",
       "OpenAI-Beta: assistants"
     ],
-    "status": "deprecated",
+    "status": "retired",
     "announced": "2025-08-20",
     "dies": "2026-08-26",
     "dies_is_earliest_possible": false,
@@ -20,7 +20,7 @@
     "replacement_notes": "Responses API + Conversations API",
     "migration_url": "https://developers.openai.com/api/docs/assistants/migration",
     "source_url": "https://developers.openai.com/api/docs/deprecations",
-    "verified_at": "2026-08-16",
+    "verified_at": "2026-09-01",
     "platform": "first-party"
   },
   {
@@ -1277,6 +1277,24 @@
     "platform": "first-party"
   },
   {
+    "id": "openai:model:gpt-4o-mini-transcribe",
+    "provider": "openai",
+    "surface": "model",
+    "api_ids": [
+      "gpt-4o-mini-transcribe"
+    ],
+    "status": "deprecated",
+    "announced": "2026-08-26",
+    "dies": "2027-02-26",
+    "dies_is_earliest_possible": false,
+    "replacement_id": null,
+    "replacement_notes": "gpt-live-transcribe or gpt-transcribe",
+    "migration_url": null,
+    "source_url": "https://developers.openai.com/api/docs/deprecations",
+    "verified_at": "2026-09-01",
+    "platform": "first-party"
+  },
+  {
     "id": "openai:model:gpt-4o-mini-transcribe-2025-03-20",
     "provider": "openai",
     "surface": "model",
@@ -1400,6 +1418,42 @@
     "migration_url": null,
     "source_url": "https://developers.openai.com/api/docs/deprecations",
     "verified_at": "2026-08-16",
+    "platform": "first-party"
+  },
+  {
+    "id": "openai:model:gpt-4o-transcribe",
+    "provider": "openai",
+    "surface": "model",
+    "api_ids": [
+      "gpt-4o-transcribe"
+    ],
+    "status": "deprecated",
+    "announced": "2026-08-26",
+    "dies": "2027-02-26",
+    "dies_is_earliest_possible": false,
+    "replacement_id": null,
+    "replacement_notes": "gpt-live-transcribe or gpt-transcribe",
+    "migration_url": null,
+    "source_url": "https://developers.openai.com/api/docs/deprecations",
+    "verified_at": "2026-09-01",
+    "platform": "first-party"
+  },
+  {
+    "id": "openai:model:gpt-4o-transcribe-diarize",
+    "provider": "openai",
+    "surface": "model",
+    "api_ids": [
+      "gpt-4o-transcribe-diarize"
+    ],
+    "status": "deprecated",
+    "announced": "2026-08-26",
+    "dies": "2027-02-26",
+    "dies_is_earliest_possible": false,
+    "replacement_id": null,
+    "replacement_notes": "gpt-live-transcribe or gpt-transcribe",
+    "migration_url": null,
+    "source_url": "https://developers.openai.com/api/docs/deprecations",
+    "verified_at": "2026-09-01",
     "platform": "first-party"
   },
   {
@@ -2468,6 +2522,24 @@
     "migration_url": null,
     "source_url": "https://developers.openai.com/api/docs/deprecations",
     "verified_at": "2026-08-16",
+    "platform": "first-party"
+  },
+  {
+    "id": "openai:model:whisper-1",
+    "provider": "openai",
+    "surface": "model",
+    "api_ids": [
+      "whisper-1"
+    ],
+    "status": "deprecated",
+    "announced": "2026-08-26",
+    "dies": "2027-02-26",
+    "dies_is_earliest_possible": false,
+    "replacement_id": null,
+    "replacement_notes": "gpt-live-transcribe or gpt-transcribe",
+    "migration_url": null,
+    "source_url": "https://developers.openai.com/api/docs/deprecations",
+    "verified_at": "2026-09-01",
     "platform": "first-party"
   }
 ]
