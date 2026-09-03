@@ -1,1 +1,5 @@
-{}
+{
+  "openai": "0f31da68b60eb9afc2e3e521d1c0f0091967455ef9e6556b454c974368a0a852",
+  "anthropic": "0230d571767d0ef6a3f76db87a2e4c9edff9faad8baab36abf69ee0581bd9922",
+  "google": "df343a8924a51c7632bfdb2cd4bc97f726d79f7526d45af83fad0289b6be1cd9"
+}
