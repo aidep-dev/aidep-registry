@@ -504,6 +504,24 @@
     "platform": "first-party"
   },
   {
+    "id": "google:model:gemini-omni-flash-preview",
+    "provider": "google",
+    "surface": "model",
+    "api_ids": [
+      "gemini-omni-flash-preview"
+    ],
+    "status": "deprecated",
+    "announced": null,
+    "dies": "2026-09-30",
+    "dies_is_earliest_possible": true,
+    "replacement_id": "gemini-omni-1.1-flash",
+    "replacement_notes": null,
+    "migration_url": null,
+    "source_url": "https://ai.google.dev/gemini-api/docs/deprecations",
+    "verified_at": "2026-09-06",
+    "platform": "first-party"
+  },
+  {
     "id": "google:model:gemini-robotics-er-1.5-preview",
     "provider": "google",
     "surface": "model",
@@ -672,15 +690,15 @@
     "api_ids": [
       "veo-2.0-generate-001"
     ],
-    "status": "deprecated",
+    "status": "retired",
     "announced": null,
     "dies": "2026-06-30",
-    "dies_is_earliest_possible": true,
+    "dies_is_earliest_possible": false,
     "replacement_id": null,
     "replacement_notes": "veo-3.1-generate-preview or Gemini Enterprise Agent Platform (https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/veo/3-1-generate)",
     "migration_url": null,
     "source_url": "https://ai.google.dev/gemini-api/docs/deprecations",
-    "verified_at": "2026-08-16",
+    "verified_at": "2026-09-06",
     "platform": "first-party"
   },
   {
