@@ -48,7 +48,7 @@ jobs:
           # A row that appeared or a status that flipped is the vendor page as it
           # stands and goes live on its own. A row gone from a page or a date that
           # moved is worth a human's eyes first, so that PR stays open.
-          if grep -q " 0 gone from page" .poller-pr-body.md && ! grep -qE '^\| [^|]+ \| dies \|' .poller-pr-body.md; then
+          if grep -q " 0 gone from page" .poller-pr-body.md && ! grep -qE '^\| [^|]+ \| dies \| [^|]*→' .poller-pr-body.md; then
             for attempt in 1 2 3; do
               gh pr merge "$branch" --squash --delete-branch && break
               sleep 15
