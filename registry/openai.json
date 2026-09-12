@@ -1691,6 +1691,24 @@
     "platform": "first-party"
   },
   {
+    "id": "openai:model:gpt-5.4-cyber",
+    "provider": "openai",
+    "surface": "model",
+    "api_ids": [
+      "gpt-5.4-cyber"
+    ],
+    "status": "deprecated",
+    "announced": "2026-09-11",
+    "dies": "2026-10-01",
+    "dies_is_earliest_possible": false,
+    "replacement_id": "gpt-5.6-cyber",
+    "replacement_notes": null,
+    "migration_url": null,
+    "source_url": "https://developers.openai.com/api/docs/deprecations",
+    "verified_at": "2026-09-12",
+    "platform": "first-party"
+  },
+  {
     "id": "openai:model:gpt-audio",
     "provider": "openai",
     "surface": "model",
