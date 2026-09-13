@@ -1,3 +1,5 @@
+![aidep-registry, every OpenAI, Anthropic and Google deprecation as reviewable JSON](brand/social-registry.png)
+
 # aidep-registry
 
 The deprecation registry behind [aidep](https://aidep.dev): every OpenAI, Anthropic, and Google model and API deprecation as reviewable JSON, kept current by a daily poller whose output is a pull request, not a database write.
