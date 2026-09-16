@@ -172,11 +172,11 @@
     "announced": null,
     "dies": "2025-12-09",
     "dies_is_earliest_possible": false,
-    "replacement_id": "gemini-3.1-flash-live-preview",
+    "replacement_id": "gemini-3.8-live",
     "replacement_notes": null,
     "migration_url": null,
     "source_url": "https://ai.google.dev/gemini-api/docs/deprecations",
-    "verified_at": "2026-08-16",
+    "verified_at": "2026-09-16",
     "platform": "first-party"
   },
   {
@@ -496,11 +496,11 @@
     "announced": null,
     "dies": "2025-12-09",
     "dies_is_earliest_possible": false,
-    "replacement_id": "gemini-3.1-flash-live-preview",
+    "replacement_id": "gemini-3.8-live",
     "replacement_notes": null,
     "migration_url": null,
     "source_url": "https://ai.google.dev/gemini-api/docs/deprecations",
-    "verified_at": "2026-08-16",
+    "verified_at": "2026-09-16",
     "platform": "first-party"
   },
   {
