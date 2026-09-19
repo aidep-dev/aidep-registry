@@ -295,14 +295,14 @@
       "claude-mythos-preview"
     ],
     "status": "deprecated",
-    "announced": null,
+    "announced": "2026-06-09",
     "dies": null,
     "dies_is_earliest_possible": false,
-    "replacement_id": "claude-mythos-5",
+    "replacement_id": null,
     "replacement_notes": null,
     "migration_url": "https://platform.claude.com/docs/en/about-claude/model-deprecations",
     "source_url": "https://platform.claude.com/docs/en/about-claude/model-deprecations",
-    "verified_at": "2026-08-16",
+    "verified_at": "2026-09-19",
     "platform": "first-party"
   },
   {
