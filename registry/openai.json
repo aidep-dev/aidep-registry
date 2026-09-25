@@ -156,7 +156,7 @@
     "api_ids": [
       "/v1/videos"
     ],
-    "status": "deprecated",
+    "status": "retired",
     "announced": "2026-03-24",
     "dies": "2026-09-24",
     "dies_is_earliest_possible": false,
@@ -164,7 +164,7 @@
     "replacement_notes": null,
     "migration_url": null,
     "source_url": "https://developers.openai.com/api/docs/deprecations",
-    "verified_at": "2026-08-16",
+    "verified_at": "2026-09-25",
     "platform": "first-party"
   },
   {
@@ -2063,7 +2063,7 @@
     "api_ids": [
       "sora-2"
     ],
-    "status": "deprecated",
+    "status": "retired",
     "announced": "2026-03-24",
     "dies": "2026-09-24",
     "dies_is_earliest_possible": false,
@@ -2071,7 +2071,7 @@
     "replacement_notes": null,
     "migration_url": null,
     "source_url": "https://developers.openai.com/api/docs/deprecations",
-    "verified_at": "2026-08-16",
+    "verified_at": "2026-09-25",
     "platform": "first-party"
   },
   {
@@ -2081,7 +2081,7 @@
     "api_ids": [
       "sora-2-2025-10-06"
     ],
-    "status": "deprecated",
+    "status": "retired",
     "announced": "2026-03-24",
     "dies": "2026-09-24",
     "dies_is_earliest_possible": false,
@@ -2089,7 +2089,7 @@
     "replacement_notes": null,
     "migration_url": null,
     "source_url": "https://developers.openai.com/api/docs/deprecations",
-    "verified_at": "2026-08-16",
+    "verified_at": "2026-09-25",
     "platform": "first-party"
   },
   {
@@ -2099,7 +2099,7 @@
     "api_ids": [
       "sora-2-2025-12-08"
     ],
-    "status": "deprecated",
+    "status": "retired",
     "announced": "2026-03-24",
     "dies": "2026-09-24",
     "dies_is_earliest_possible": false,
@@ -2107,7 +2107,7 @@
     "replacement_notes": null,
     "migration_url": null,
     "source_url": "https://developers.openai.com/api/docs/deprecations",
-    "verified_at": "2026-08-16",
+    "verified_at": "2026-09-25",
     "platform": "first-party"
   },
   {
@@ -2117,7 +2117,7 @@
     "api_ids": [
       "sora-2-pro"
     ],
-    "status": "deprecated",
+    "status": "retired",
     "announced": "2026-03-24",
     "dies": "2026-09-24",
     "dies_is_earliest_possible": false,
@@ -2125,7 +2125,7 @@
     "replacement_notes": null,
     "migration_url": null,
     "source_url": "https://developers.openai.com/api/docs/deprecations",
-    "verified_at": "2026-08-16",
+    "verified_at": "2026-09-25",
     "platform": "first-party"
   },
   {
@@ -2135,7 +2135,7 @@
     "api_ids": [
       "sora-2-pro-2025-10-06"
     ],
-    "status": "deprecated",
+    "status": "retired",
     "announced": "2026-03-24",
     "dies": "2026-09-24",
     "dies_is_earliest_possible": false,
@@ -2143,7 +2143,7 @@
     "replacement_notes": null,
     "migration_url": null,
     "source_url": "https://developers.openai.com/api/docs/deprecations",
-    "verified_at": "2026-08-16",
+    "verified_at": "2026-09-25",
     "platform": "first-party"
   },
   {
