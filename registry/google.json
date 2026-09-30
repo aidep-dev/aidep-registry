@@ -582,15 +582,15 @@
     "api_ids": [
       "imagen-4.0-fast-generate-001"
     ],
-    "status": "deprecated",
+    "status": "retired",
     "announced": null,
     "dies": "2026-08-17",
-    "dies_is_earliest_possible": true,
+    "dies_is_earliest_possible": false,
     "replacement_id": "gemini-3.1-flash-image",
     "replacement_notes": null,
     "migration_url": null,
     "source_url": "https://ai.google.dev/gemini-api/docs/deprecations",
-    "verified_at": "2026-08-16",
+    "verified_at": "2026-09-30",
     "platform": "first-party"
   },
   {
@@ -600,15 +600,15 @@
     "api_ids": [
       "imagen-4.0-generate-001"
     ],
-    "status": "deprecated",
+    "status": "retired",
     "announced": null,
     "dies": "2026-08-17",
-    "dies_is_earliest_possible": true,
+    "dies_is_earliest_possible": false,
     "replacement_id": "gemini-3.1-flash-image",
     "replacement_notes": null,
     "migration_url": null,
     "source_url": "https://ai.google.dev/gemini-api/docs/deprecations",
-    "verified_at": "2026-08-16",
+    "verified_at": "2026-09-30",
     "platform": "first-party"
   },
   {
@@ -636,15 +636,15 @@
     "api_ids": [
       "imagen-4.0-ultra-generate-001"
     ],
-    "status": "deprecated",
+    "status": "retired",
     "announced": null,
     "dies": "2026-08-17",
-    "dies_is_earliest_possible": true,
+    "dies_is_earliest_possible": false,
     "replacement_id": "gemini-3.1-flash-image",
     "replacement_notes": null,
     "migration_url": null,
     "source_url": "https://ai.google.dev/gemini-api/docs/deprecations",
-    "verified_at": "2026-08-16",
+    "verified_at": "2026-09-30",
     "platform": "first-party"
   },
   {
@@ -708,15 +708,15 @@
     "api_ids": [
       "veo-3.0-fast-generate-001"
     ],
-    "status": "deprecated",
+    "status": "retired",
     "announced": null,
     "dies": "2026-06-30",
-    "dies_is_earliest_possible": true,
+    "dies_is_earliest_possible": false,
     "replacement_id": null,
     "replacement_notes": "veo-3.1-fast-generate-preview or Gemini Enterprise Agent Platform (https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/veo/3-1-generate)",
     "migration_url": null,
     "source_url": "https://ai.google.dev/gemini-api/docs/deprecations",
-    "verified_at": "2026-08-16",
+    "verified_at": "2026-09-30",
     "platform": "first-party"
   },
   {
@@ -744,15 +744,15 @@
     "api_ids": [
       "veo-3.0-generate-001"
     ],
-    "status": "deprecated",
+    "status": "retired",
     "announced": null,
     "dies": "2026-06-30",
-    "dies_is_earliest_possible": true,
+    "dies_is_earliest_possible": false,
     "replacement_id": null,
     "replacement_notes": "veo-3.1-generate-preview or Gemini Enterprise Agent Platform (https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/veo/3-1-generate)",
     "migration_url": null,
     "source_url": "https://ai.google.dev/gemini-api/docs/deprecations",
-    "verified_at": "2026-08-16",
+    "verified_at": "2026-09-30",
     "platform": "first-party"
   },
   {
@@ -771,6 +771,60 @@
     "migration_url": null,
     "source_url": "https://ai.google.dev/gemini-api/docs/deprecations",
     "verified_at": "2026-08-16",
+    "platform": "first-party"
+  },
+  {
+    "id": "google:model:veo-3.1-fast-generate-preview",
+    "provider": "google",
+    "surface": "model",
+    "api_ids": [
+      "veo-3.1-fast-generate-preview"
+    ],
+    "status": "deprecated",
+    "announced": null,
+    "dies": "2026-10-22",
+    "dies_is_earliest_possible": true,
+    "replacement_id": "gemini-omni-1.1-flash",
+    "replacement_notes": null,
+    "migration_url": null,
+    "source_url": "https://ai.google.dev/gemini-api/docs/deprecations",
+    "verified_at": "2026-09-30",
+    "platform": "first-party"
+  },
+  {
+    "id": "google:model:veo-3.1-generate-preview",
+    "provider": "google",
+    "surface": "model",
+    "api_ids": [
+      "veo-3.1-generate-preview"
+    ],
+    "status": "deprecated",
+    "announced": null,
+    "dies": "2026-10-22",
+    "dies_is_earliest_possible": true,
+    "replacement_id": "gemini-omni-1.1-flash",
+    "replacement_notes": null,
+    "migration_url": null,
+    "source_url": "https://ai.google.dev/gemini-api/docs/deprecations",
+    "verified_at": "2026-09-30",
+    "platform": "first-party"
+  },
+  {
+    "id": "google:model:veo-3.1-lite-generate-preview",
+    "provider": "google",
+    "surface": "model",
+    "api_ids": [
+      "veo-3.1-lite-generate-preview"
+    ],
+    "status": "deprecated",
+    "announced": null,
+    "dies": "2026-10-22",
+    "dies_is_earliest_possible": true,
+    "replacement_id": "gemini-omni-1.1-flash",
+    "replacement_notes": null,
+    "migration_url": null,
+    "source_url": "https://ai.google.dev/gemini-api/docs/deprecations",
+    "verified_at": "2026-09-30",
     "platform": "first-party"
   }
 ]
