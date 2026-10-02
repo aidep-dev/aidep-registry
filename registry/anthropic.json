@@ -360,6 +360,24 @@
     "platform": "first-party"
   },
   {
+    "id": "anthropic:model:claude-sonnet-4-5-20250929",
+    "provider": "anthropic",
+    "surface": "model",
+    "api_ids": [
+      "claude-sonnet-4-5-20250929"
+    ],
+    "status": "deprecated",
+    "announced": "2026-09-30",
+    "dies": "2026-11-30",
+    "dies_is_earliest_possible": false,
+    "replacement_id": "claude-sonnet-5-5",
+    "replacement_notes": null,
+    "migration_url": "https://platform.claude.com/docs/en/about-claude/model-deprecations",
+    "source_url": "https://platform.claude.com/docs/en/about-claude/model-deprecations",
+    "verified_at": "2026-10-02",
+    "platform": "first-party"
+  },
+  {
     "id": "anthropic:param:temperature-top-p-top-k",
     "provider": "anthropic",
     "surface": "param",
