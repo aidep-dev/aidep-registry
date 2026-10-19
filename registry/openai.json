@@ -42,6 +42,24 @@
     "platform": "first-party"
   },
   {
+    "id": "openai:endpoint:v1-audio-translations",
+    "provider": "openai",
+    "surface": "endpoint",
+    "api_ids": [
+      "/v1/audio/translations"
+    ],
+    "status": "deprecated",
+    "announced": "2026-08-26",
+    "dies": "2027-02-26",
+    "dies_is_earliest_possible": false,
+    "replacement_id": "v1/realtime/translations",
+    "replacement_notes": null,
+    "migration_url": null,
+    "source_url": "https://developers.openai.com/api/docs/deprecations",
+    "verified_at": "2026-10-19",
+    "platform": "first-party"
+  },
+  {
     "id": "openai:endpoint:v1-classifications",
     "provider": "openai",
     "surface": "endpoint",
@@ -956,15 +974,15 @@
     "api_ids": [
       "gpt-4-1106-preview"
     ],
-    "status": "retired",
-    "announced": "2025-09-26",
-    "dies": "2026-03-26",
+    "status": "deprecated",
+    "announced": "2026-04-22",
+    "dies": "2026-10-23",
     "dies_is_earliest_possible": false,
-    "replacement_id": null,
-    "replacement_notes": "gpt-5 or gpt-4.1*",
+    "replacement_id": "gpt-5.6-sol",
+    "replacement_notes": null,
     "migration_url": null,
     "source_url": "https://developers.openai.com/api/docs/deprecations",
-    "verified_at": "2026-08-16",
+    "verified_at": "2026-10-19",
     "platform": "first-party"
   },
   {
@@ -1078,6 +1096,42 @@
     "platform": "first-party"
   },
   {
+    "id": "openai:model:gpt-4.1-2025-04-14",
+    "provider": "openai",
+    "surface": "model",
+    "api_ids": [
+      "gpt-4.1-2025-04-14"
+    ],
+    "status": "deprecated",
+    "announced": "2026-10-14",
+    "dies": "2027-01-14",
+    "dies_is_earliest_possible": false,
+    "replacement_id": "gpt-6-luna",
+    "replacement_notes": null,
+    "migration_url": null,
+    "source_url": "https://developers.openai.com/api/docs/deprecations",
+    "verified_at": "2026-10-19",
+    "platform": "first-party"
+  },
+  {
+    "id": "openai:model:gpt-4.1-mini-2025-04-14",
+    "provider": "openai",
+    "surface": "model",
+    "api_ids": [
+      "gpt-4.1-mini-2025-04-14"
+    ],
+    "status": "deprecated",
+    "announced": "2026-10-14",
+    "dies": "2027-01-14",
+    "dies_is_earliest_possible": false,
+    "replacement_id": "gpt-6-luna",
+    "replacement_notes": null,
+    "migration_url": null,
+    "source_url": "https://developers.openai.com/api/docs/deprecations",
+    "verified_at": "2026-10-19",
+    "platform": "first-party"
+  },
+  {
     "id": "openai:model:gpt-4.1-nano",
     "provider": "openai",
     "surface": "model",
@@ -1133,6 +1187,25 @@
     "platform": "first-party"
   },
   {
+    "id": "openai:model:gpt-4o-2024-08-06",
+    "provider": "openai",
+    "surface": "model",
+    "api_ids": [
+      "gpt-4o-2024-08-06",
+      "gpt-4o-2024-11-20"
+    ],
+    "status": "deprecated",
+    "announced": "2026-10-14",
+    "dies": "2027-01-14",
+    "dies_is_earliest_possible": false,
+    "replacement_id": "gpt-6-luna",
+    "replacement_notes": null,
+    "migration_url": null,
+    "source_url": "https://developers.openai.com/api/docs/deprecations",
+    "verified_at": "2026-10-19",
+    "platform": "first-party"
+  },
+  {
     "id": "openai:model:gpt-4o-audio",
     "provider": "openai",
     "surface": "model",
@@ -1184,6 +1257,24 @@
     "migration_url": null,
     "source_url": "https://developers.openai.com/api/docs/deprecations",
     "verified_at": "2026-08-16",
+    "platform": "first-party"
+  },
+  {
+    "id": "openai:model:gpt-4o-mini-2024-07-18",
+    "provider": "openai",
+    "surface": "model",
+    "api_ids": [
+      "gpt-4o-mini-2024-07-18"
+    ],
+    "status": "deprecated",
+    "announced": "2026-10-14",
+    "dies": "2027-01-14",
+    "dies_is_earliest_possible": false,
+    "replacement_id": "gpt-6-luna",
+    "replacement_notes": null,
+    "migration_url": null,
+    "source_url": "https://developers.openai.com/api/docs/deprecations",
+    "verified_at": "2026-10-19",
     "platform": "first-party"
   },
   {
@@ -1310,6 +1401,42 @@
     "migration_url": null,
     "source_url": "https://developers.openai.com/api/docs/deprecations",
     "verified_at": "2026-08-16",
+    "platform": "first-party"
+  },
+  {
+    "id": "openai:model:gpt-4o-mini-tts-2025-03-20",
+    "provider": "openai",
+    "surface": "model",
+    "api_ids": [
+      "gpt-4o-mini-tts-2025-03-20"
+    ],
+    "status": "deprecated",
+    "announced": "2026-10-01",
+    "dies": "2027-01-06",
+    "dies_is_earliest_possible": false,
+    "replacement_id": "gpt-realtime-2.1-mini",
+    "replacement_notes": null,
+    "migration_url": null,
+    "source_url": "https://developers.openai.com/api/docs/deprecations",
+    "verified_at": "2026-10-19",
+    "platform": "first-party"
+  },
+  {
+    "id": "openai:model:gpt-4o-mini-tts-2025-12-15",
+    "provider": "openai",
+    "surface": "model",
+    "api_ids": [
+      "gpt-4o-mini-tts-2025-12-15"
+    ],
+    "status": "deprecated",
+    "announced": "2026-10-01",
+    "dies": "2027-01-06",
+    "dies_is_earliest_possible": false,
+    "replacement_id": "gpt-realtime-2.1-mini",
+    "replacement_notes": null,
+    "migration_url": null,
+    "source_url": "https://developers.openai.com/api/docs/deprecations",
+    "verified_at": "2026-10-19",
     "platform": "first-party"
   },
   {
@@ -1565,6 +1692,24 @@
     "platform": "first-party"
   },
   {
+    "id": "openai:model:gpt-5.1",
+    "provider": "openai",
+    "surface": "model",
+    "api_ids": [
+      "gpt-5.1"
+    ],
+    "status": "deprecated",
+    "announced": "2026-10-01",
+    "dies": "2027-04-01",
+    "dies_is_earliest_possible": false,
+    "replacement_id": "gpt-6-sol",
+    "replacement_notes": null,
+    "migration_url": null,
+    "source_url": "https://developers.openai.com/api/docs/deprecations",
+    "verified_at": "2026-10-19",
+    "platform": "first-party"
+  },
+  {
     "id": "openai:model:gpt-5.1-chat-latest",
     "provider": "openai",
     "surface": "model",
@@ -1691,21 +1836,57 @@
     "platform": "first-party"
   },
   {
+    "id": "openai:model:gpt-5.3-codex",
+    "provider": "openai",
+    "surface": "model",
+    "api_ids": [
+      "gpt-5.3-codex"
+    ],
+    "status": "deprecated",
+    "announced": "2026-10-01",
+    "dies": "2027-04-01",
+    "dies_is_earliest_possible": false,
+    "replacement_id": "gpt-6-sol",
+    "replacement_notes": null,
+    "migration_url": null,
+    "source_url": "https://developers.openai.com/api/docs/deprecations",
+    "verified_at": "2026-10-19",
+    "platform": "first-party"
+  },
+  {
     "id": "openai:model:gpt-5.4-cyber",
     "provider": "openai",
     "surface": "model",
     "api_ids": [
       "gpt-5.4-cyber"
     ],
-    "status": "deprecated",
+    "status": "retired",
     "announced": "2026-09-11",
     "dies": "2026-10-01",
     "dies_is_earliest_possible": false,
-    "replacement_id": "gpt-5.6-cyber",
+    "replacement_id": null,
+    "replacement_notes": "The most capable cyber model available to you.",
+    "migration_url": null,
+    "source_url": "https://developers.openai.com/api/docs/deprecations",
+    "verified_at": "2026-10-19",
+    "platform": "first-party"
+  },
+  {
+    "id": "openai:model:gpt-5.4-nano",
+    "provider": "openai",
+    "surface": "model",
+    "api_ids": [
+      "gpt-5.4-nano"
+    ],
+    "status": "deprecated",
+    "announced": "2026-10-01",
+    "dies": "2027-04-01",
+    "dies_is_earliest_possible": false,
+    "replacement_id": "gpt-6-luna",
     "replacement_notes": null,
     "migration_url": null,
     "source_url": "https://developers.openai.com/api/docs/deprecations",
-    "verified_at": "2026-09-12",
+    "verified_at": "2026-10-19",
     "platform": "first-party"
   },
   {
@@ -2540,6 +2721,42 @@
     "migration_url": null,
     "source_url": "https://developers.openai.com/api/docs/deprecations",
     "verified_at": "2026-08-16",
+    "platform": "first-party"
+  },
+  {
+    "id": "openai:model:tts-1",
+    "provider": "openai",
+    "surface": "model",
+    "api_ids": [
+      "tts-1"
+    ],
+    "status": "deprecated",
+    "announced": "2026-10-01",
+    "dies": "2027-01-06",
+    "dies_is_earliest_possible": false,
+    "replacement_id": "gpt-realtime-2.1-mini",
+    "replacement_notes": null,
+    "migration_url": null,
+    "source_url": "https://developers.openai.com/api/docs/deprecations",
+    "verified_at": "2026-10-19",
+    "platform": "first-party"
+  },
+  {
+    "id": "openai:model:tts-1-hd",
+    "provider": "openai",
+    "surface": "model",
+    "api_ids": [
+      "tts-1-hd"
+    ],
+    "status": "deprecated",
+    "announced": "2026-10-01",
+    "dies": "2027-01-06",
+    "dies_is_earliest_possible": false,
+    "replacement_id": "gpt-realtime-2.1-mini",
+    "replacement_notes": null,
+    "migration_url": null,
+    "source_url": "https://developers.openai.com/api/docs/deprecations",
+    "verified_at": "2026-10-19",
     "platform": "first-party"
   },
   {
